@@ -20,13 +20,17 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-              return _context.Customer != null ? 
-                          View(await _context.Customer.ToListAsync()) :
-                          Problem("Entity set 'CarRentalWebfinalContext.Customer'  is null.");
+            var Customer = from s in _context.Customer
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                Customer = Customer.Where(s => s.LastName.Contains(searchString)
+                                       || s.FirstMidName.Contains(searchString));
+            }
+            return View(await Customer.ToListAsync());
         }
-
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
