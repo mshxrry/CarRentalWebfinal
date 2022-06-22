@@ -10,7 +10,7 @@ namespace CarRentalWebfinal.Models
         public string Model { get; set; }
         public string Type { get; set; }
         public string Transmission { get; set; }
-        public string ModelNumber { get; set; }
+        public int ModelNumber { get; set; }
 
         public ICollection<Reservation> Reservations { get; set; }
     }

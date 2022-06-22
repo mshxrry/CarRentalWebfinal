@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalWebfinal.Areas.Identity.Data;
 using CarRentalWebfinal.Models;
 
-namespace CarRentalWebfinal.Views.Locations
+namespace CarRentalWebfinal.Controllers
 {
     public class LocationsController : Controller
     {
@@ -58,7 +58,7 @@ namespace CarRentalWebfinal.Views.Locations
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LocationId,Address,City,State")] Location location)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(location);
                 await _context.SaveChangesAsync();
@@ -95,7 +95,7 @@ namespace CarRentalWebfinal.Views.Locations
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

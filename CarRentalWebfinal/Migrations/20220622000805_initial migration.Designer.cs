@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRentalWebfinal.Migrations
 {
     [DbContext(typeof(CarRentalWebfinalContext))]
-    [Migration("20220616220332_initial migration")]
+    [Migration("20220622000805_initial migration")]
     partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,9 +155,6 @@ namespace CarRentalWebfinal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReservationId"), 1L, 1);
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("LocationAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -174,16 +171,9 @@ namespace CarRentalWebfinal.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
-
                     b.HasKey("ReservationId");
 
-                    b.HasIndex("CustomerId");
-
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("VehicleId");
 
                     b.ToTable("Reservation");
                 });
@@ -204,9 +194,8 @@ namespace CarRentalWebfinal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ModelNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ModelNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Transmission")
                         .IsRequired()
@@ -219,6 +208,21 @@ namespace CarRentalWebfinal.Migrations
                     b.HasKey("VehicleId");
 
                     b.ToTable("Vehicle");
+                });
+
+            modelBuilder.Entity("CustomerReservation", b =>
+                {
+                    b.Property<int>("ReservationsReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customersCustomerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservationsReservationId", "customersCustomerId");
+
+                    b.HasIndex("customersCustomerId");
+
+                    b.ToTable("CustomerReservation");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -358,27 +362,41 @@ namespace CarRentalWebfinal.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ReservationVehicle", b =>
+                {
+                    b.Property<int>("ReservationsReservationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("vehiclesVehicleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReservationsReservationId", "vehiclesVehicleId");
+
+                    b.HasIndex("vehiclesVehicleId");
+
+                    b.ToTable("ReservationVehicle");
+                });
+
             modelBuilder.Entity("CarRentalWebfinal.Models.Reservation", b =>
                 {
-                    b.HasOne("CarRentalWebfinal.Models.Customer", "Customer")
-                        .WithMany("Reservations")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("CarRentalWebfinal.Models.Location", null)
                         .WithMany("Reservations")
                         .HasForeignKey("LocationId");
+                });
 
-                    b.HasOne("CarRentalWebfinal.Models.Vehicle", "Vehicle")
-                        .WithMany("Reservations")
-                        .HasForeignKey("VehicleId")
+            modelBuilder.Entity("CustomerReservation", b =>
+                {
+                    b.HasOne("CarRentalWebfinal.Models.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationsReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Customer");
-
-                    b.Navigation("Vehicle");
+                    b.HasOne("CarRentalWebfinal.Models.Customer", null)
+                        .WithMany()
+                        .HasForeignKey("customersCustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -432,17 +450,22 @@ namespace CarRentalWebfinal.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CarRentalWebfinal.Models.Customer", b =>
+            modelBuilder.Entity("ReservationVehicle", b =>
                 {
-                    b.Navigation("Reservations");
+                    b.HasOne("CarRentalWebfinal.Models.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationsReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarRentalWebfinal.Models.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("vehiclesVehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CarRentalWebfinal.Models.Location", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("CarRentalWebfinal.Models.Vehicle", b =>
                 {
                     b.Navigation("Reservations");
                 });

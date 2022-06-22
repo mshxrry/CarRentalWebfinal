@@ -90,7 +90,7 @@ namespace CarRentalWebfinal.Migrations
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Transmission = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModelNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModelNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,27 +213,61 @@ namespace CarRentalWebfinal.Migrations
                     LocationAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PickUpTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    VehicleId = table.Column<int>(type: "int", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservation", x => x.ReservationId);
                     table.ForeignKey(
-                        name: "FK_Reservation_Customer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customer",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Reservation_Location_LocationId",
                         column: x => x.LocationId,
                         principalTable: "Location",
                         principalColumn: "LocationId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerReservation",
+                columns: table => new
+                {
+                    ReservationsReservationId = table.Column<int>(type: "int", nullable: false),
+                    customersCustomerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerReservation", x => new { x.ReservationsReservationId, x.customersCustomerId });
                     table.ForeignKey(
-                        name: "FK_Reservation_Vehicle_VehicleId",
-                        column: x => x.VehicleId,
+                        name: "FK_CustomerReservation_Customer_customersCustomerId",
+                        column: x => x.customersCustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerReservation_Reservation_ReservationsReservationId",
+                        column: x => x.ReservationsReservationId,
+                        principalTable: "Reservation",
+                        principalColumn: "ReservationId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReservationVehicle",
+                columns: table => new
+                {
+                    ReservationsReservationId = table.Column<int>(type: "int", nullable: false),
+                    vehiclesVehicleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReservationVehicle", x => new { x.ReservationsReservationId, x.vehiclesVehicleId });
+                    table.ForeignKey(
+                        name: "FK_ReservationVehicle_Reservation_ReservationsReservationId",
+                        column: x => x.ReservationsReservationId,
+                        principalTable: "Reservation",
+                        principalColumn: "ReservationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReservationVehicle_Vehicle_vehiclesVehicleId",
+                        column: x => x.vehiclesVehicleId,
                         principalTable: "Vehicle",
                         principalColumn: "VehicleId",
                         onDelete: ReferentialAction.Cascade);
@@ -279,9 +313,9 @@ namespace CarRentalWebfinal.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservation_CustomerId",
-                table: "Reservation",
-                column: "CustomerId");
+                name: "IX_CustomerReservation_customersCustomerId",
+                table: "CustomerReservation",
+                column: "customersCustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservation_LocationId",
@@ -289,9 +323,9 @@ namespace CarRentalWebfinal.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservation_VehicleId",
-                table: "Reservation",
-                column: "VehicleId");
+                name: "IX_ReservationVehicle_vehiclesVehicleId",
+                table: "ReservationVehicle",
+                column: "vehiclesVehicleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -312,7 +346,10 @@ namespace CarRentalWebfinal.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Reservation");
+                name: "CustomerReservation");
+
+            migrationBuilder.DropTable(
+                name: "ReservationVehicle");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -324,10 +361,13 @@ namespace CarRentalWebfinal.Migrations
                 name: "Customer");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "Reservation");
 
             migrationBuilder.DropTable(
                 name: "Vehicle");
+
+            migrationBuilder.DropTable(
+                name: "Location");
         }
     }
 }

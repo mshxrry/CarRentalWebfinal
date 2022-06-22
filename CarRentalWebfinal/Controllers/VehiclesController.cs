@@ -8,103 +8,103 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalWebfinal.Areas.Identity.Data;
 using CarRentalWebfinal.Models;
 
-namespace CarRentalWebfinal.Views.Reservations
+namespace CarRentalWebfinal.Controllers
 {
-    public class ReservationsController : Controller
+    public class VehiclesController : Controller
     {
         private readonly CarRentalWebfinalContext _context;
 
-        public ReservationsController(CarRentalWebfinalContext context)
+        public VehiclesController(CarRentalWebfinalContext context)
         {
             _context = context;
         }
 
-        // GET: Reservations
+        // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-              return _context.Reservation != null ? 
-                          View(await _context.Reservation.ToListAsync()) :
-                          Problem("Entity set 'CarRentalWebfinalContext.Reservation'  is null.");
+              return _context.Vehicle != null ? 
+                          View(await _context.Vehicle.ToListAsync()) :
+                          Problem("Entity set 'CarRentalWebfinalContext.Vehicle'  is null.");
         }
 
-        // GET: Reservations/Details/5
+        // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Reservation == null)
+            if (id == null || _context.Vehicle == null)
             {
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation
-                .FirstOrDefaultAsync(m => m.ReservationId == id);
-            if (reservation == null)
+            var vehicle = await _context.Vehicle
+                .FirstOrDefaultAsync(m => m.VehicleId == id);
+            if (vehicle == null)
             {
                 return NotFound();
             }
 
-            return View(reservation);
+            return View(vehicle);
         }
 
-        // GET: Reservations/Create
+        // GET: Vehicles/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Reservations/Create
+        // POST: Vehicles/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ReservationId,ModelNumber,LocationAddress,PickUpTime,ReturnDate")] Reservation reservation)
+        public async Task<IActionResult> Create([Bind("VehicleId,Brand,Model,Type,Transmission,ModelNumber")] Vehicle vehicle)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(reservation);
+                _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(reservation);
+            return View(vehicle);
         }
 
-        // GET: Reservations/Edit/5
+        // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Reservation == null)
+            if (id == null || _context.Vehicle == null)
             {
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation.FindAsync(id);
-            if (reservation == null)
+            var vehicle = await _context.Vehicle.FindAsync(id);
+            if (vehicle == null)
             {
                 return NotFound();
             }
-            return View(reservation);
+            return View(vehicle);
         }
 
-        // POST: Reservations/Edit/5
+        // POST: Vehicles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ReservationId,ModelNumber,LocationAddress,PickUpTime,ReturnDate")] Reservation reservation)
+        public async Task<IActionResult> Edit(int id, [Bind("VehicleId,Brand,Model,Type,Transmission,ModelNumber")] Vehicle vehicle)
         {
-            if (id != reservation.ReservationId)
+            if (id != vehicle.VehicleId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(reservation);
+                    _context.Update(vehicle);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(reservation.ReservationId))
+                    if (!VehicleExists(vehicle.VehicleId))
                     {
                         return NotFound();
                     }
@@ -115,49 +115,49 @@ namespace CarRentalWebfinal.Views.Reservations
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(reservation);
+            return View(vehicle);
         }
 
-        // GET: Reservations/Delete/5
+        // GET: Vehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Reservation == null)
+            if (id == null || _context.Vehicle == null)
             {
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation
-                .FirstOrDefaultAsync(m => m.ReservationId == id);
-            if (reservation == null)
+            var vehicle = await _context.Vehicle
+                .FirstOrDefaultAsync(m => m.VehicleId == id);
+            if (vehicle == null)
             {
                 return NotFound();
             }
 
-            return View(reservation);
+            return View(vehicle);
         }
 
-        // POST: Reservations/Delete/5
+        // POST: Vehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Reservation == null)
+            if (_context.Vehicle == null)
             {
-                return Problem("Entity set 'CarRentalWebfinalContext.Reservation'  is null.");
+                return Problem("Entity set 'CarRentalWebfinalContext.Vehicle'  is null.");
             }
-            var reservation = await _context.Reservation.FindAsync(id);
-            if (reservation != null)
+            var vehicle = await _context.Vehicle.FindAsync(id);
+            if (vehicle != null)
             {
-                _context.Reservation.Remove(reservation);
+                _context.Vehicle.Remove(vehicle);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ReservationExists(int id)
+        private bool VehicleExists(int id)
         {
-          return (_context.Reservation?.Any(e => e.ReservationId == id)).GetValueOrDefault();
+          return (_context.Vehicle?.Any(e => e.VehicleId == id)).GetValueOrDefault();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace CarRentalWebfinal.Models
         public DateTime ReturnDate { get; set; }
 
 
-        public Customer Customer { get; set; }
-        public Vehicle Vehicle { get; set; }
+        public ICollection<Customer> customers { get; set; }
+        public ICollection<Vehicle> vehicles { get; set; }
     }
 }
