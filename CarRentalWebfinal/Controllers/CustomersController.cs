@@ -20,16 +20,29 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             var Customer = from s in _context.Customer
                            select s;
-            if (!String.IsNullOrEmpty(searchString))
+            if (searchString != null)
             {
-                Customer = Customer.Where(s => s.LastName.Contains(searchString)
-                                       || s.FirstMidName.Contains(searchString));
+                pageNumber = 1;
             }
-            return View(await Customer.ToListAsync());
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            Customer = Customer.Where(s => s.LastName.Contains(searchString)
+                                       || s.FirstMidName.Contains(searchString));
+            
+            int pageSize = 3;
+            return View(await PaginatedList<Customer>.CreateAsync(Customer.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
