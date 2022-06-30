@@ -25,8 +25,11 @@ namespace CarRentalWebfinal.Controllers
     string currentFilter,
     string searchString,
     int? pageNumber)
+ 
         {
             ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "LastName" : "";
+            ViewData["NumberSortParm"] = sortOrder == "PhoneNumber" ? "number_desc" : "PhoneNumber";
             var Customer = from s in _context.Customer
                            select s;
             if (searchString != null)

@@ -23,13 +23,13 @@
     <thead>
         <tr>
             <th>
-                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">LastName</a>
+                FirstMidName
             </th>
             <th>
-               FirstMidName
+               <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">LastName</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Address</a>
+                Address
             </th>
              <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">PhoneNumber</a>
