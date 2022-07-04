@@ -20,32 +20,34 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index(
-    string sortOrder,
-    string currentFilter,
-    string searchString,
-    int? pageNumber)
- 
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "LastName" : "";
-            ViewData["NumberSortParm"] = sortOrder == "PhoneNumber" ? "number_desc" : "PhoneNumber";
-            var Customer = from s in _context.Customer
-                           select s;
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NumberSortParm"] = sortOrder == "Number" ? "number_desc" : "PhoneNumber";
             ViewData["CurrentFilter"] = searchString;
-            Customer = Customer.Where(s => s.LastName.Contains(searchString)
+            var customers = from s in _context.Customer
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(s => s.LastName.Contains(searchString)
                                        || s.FirstMidName.Contains(searchString));
-            
-            int pageSize = 3;
-            return View(await PaginatedList<Customer>.CreateAsync(Customer.AsNoTracking(), pageNumber ?? 1, pageSize));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    customers = customers.OrderByDescending(s => s.LastName);
+                    break;
+                case "Number":
+                    customers = customers.OrderBy(s => s.PhoneNumber);
+                    break;
+                case "number_desc":
+                    customers = customers.OrderByDescending(s => s.PhoneNumber);
+                    break;
+                default:
+                    customers =customers.OrderBy(s => s.LastName);
+                    break;
+            }
+            return View(await customers.AsNoTracking().ToListAsync());
         }
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
