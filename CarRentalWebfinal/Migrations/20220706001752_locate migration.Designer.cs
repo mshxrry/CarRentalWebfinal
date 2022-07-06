@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRentalWebfinal.Migrations
 {
     [DbContext(typeof(CarRentalWebfinalContext))]
-    [Migration("20220704030835_initia migration")]
-    partial class initiamigration
+    [Migration("20220706001752_locate migration")]
+    partial class locatemigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

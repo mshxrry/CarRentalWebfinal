@@ -20,11 +20,49 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Locations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+   string sortOrder,
+   string currentFilter,
+   string searchString,
+   int? pageNumber)
         {
-              return _context.Location != null ? 
-                          View(await _context.Location.ToListAsync()) :
-                          Problem("Entity set 'CarRentalWebfinalContext.Location'  is null.");
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Address";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            var Location = from s in _context.Location
+                            select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                Location = Location.Where(s => s.City.Contains(searchString));
+
+
+             }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    Location = Location.OrderByDescending(s => s.City);
+                    break;
+                case "Number":
+                    Location = Location.OrderBy(s => s.Address);
+                    break;
+                case "number_desc":
+                    Location = Location.OrderByDescending(s => s.Address);
+                    break;
+                default:
+                    Location = Location.OrderBy(s => s.City);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<Location>.CreateAsync(Location.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Locations/Details/5

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CarRentalWebfinal.Models.Customer>
+﻿@model PaginatedList<CarRentalWebfinal.Models.Customer>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -24,19 +25,20 @@
         <tr>
                   <th>
 
-                 @Html.DisplayNameFor(model => model.FirstMidName)
+                 FirstName
                 </th>
                 <th>
-                     <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.LastName)</a>
+                  <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">LastName</a>
+
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Address)
+                   Address
                 </th>
                 <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]">@Html.DisplayNameFor(model => model.PhoneNumber)</a>
+                     <a asp-action="Index" asp-route-sortOrder="@ViewData["NumberSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">PhoneNumber</a>
                 </th>
                 <th>
-                   @Html.DisplayNameFor(model => model.ModelNumber)
+                   ModelNumber
             </th>
             <th></th>
         </tr>
@@ -68,3 +70,22 @@
 }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
