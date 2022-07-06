@@ -20,11 +20,43 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber)
         {
-              return _context.Reservation != null ? 
-                          View(await _context.Reservation.ToListAsync()) :
-                          Problem("Entity set 'CarRentalWebfinalContext.Reservation'  is null.");
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Model";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            var Reservations = from s in _context.Reservation
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                Reservations= Reservations.Where(s => s.LocationAddress.Contains(searchString));
+
+
+            }
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    Reservations = Reservations.OrderByDescending(s => s.ReturnDate);
+                    break;
+                case "date":
+                    Reservations = Reservations.OrderBy(s => s.ReturnDate);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<Reservation>.CreateAsync(Reservations.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Reservations/Details/5

@@ -20,11 +20,49 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber)
         {
-              return _context.Vehicle != null ? 
-                          View(await _context.Vehicle.ToListAsync()) :
-                          Problem("Entity set 'CarRentalWebfinalContext.Vehicle'  is null.");
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "name_desc" : "Model";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+            var Vehicles = from s in _context.Vehicle
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                Vehicles = Vehicles.Where(s => s.Brand.Contains(searchString));
+
+
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    Vehicles = Vehicles.OrderByDescending(s => s.Brand);
+                    break;
+                case "Number":
+                    Vehicles = Vehicles.OrderBy(s => s.Model);
+                    break;
+                case "number_desc":
+                    Vehicles = Vehicles.OrderByDescending(s => s.Model);
+                    break;
+                default:
+                    Vehicles = Vehicles.OrderBy(s => s.Brand);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<Vehicle>.CreateAsync(Vehicles.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Vehicles/Details/5
