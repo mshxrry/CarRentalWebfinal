@@ -1,9 +1,7 @@
-﻿@model PaginatedList<CarRentalWebfinal.Models.Location>
-
+﻿@model IEnumerable<CarRentalWebfinal.Models.Location>
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Index</h1>
@@ -11,26 +9,17 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by city: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
-       </p>
-     </div>
-     </form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Address</a>
+                @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">City</a>
+                @Html.DisplayNameFor(model => model.City)
             </th>
             <th>
-                State
+                @Html.DisplayNameFor(model => model.State)
             </th>
             <th></th>
         </tr>
@@ -56,22 +45,3 @@
 }
     </tbody>
 </table>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
