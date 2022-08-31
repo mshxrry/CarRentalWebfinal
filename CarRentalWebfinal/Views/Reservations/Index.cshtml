@@ -28,7 +28,7 @@
              LocationAddress
             </th>
             <th>
-                PickupTime
+               <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">PickUpTime</a>
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">ReturnDate</a>

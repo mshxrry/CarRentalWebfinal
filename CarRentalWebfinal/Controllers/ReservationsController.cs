@@ -49,10 +49,16 @@ namespace CarRentalWebfinal.Controllers
             switch (sortOrder)
             {
                 case "date_desc":
+                    Reservations =Reservations.OrderByDescending(s => s.PickUpTime);
+                    break;
+                case "Date":
+                    Reservations = Reservations.OrderBy(s => s.ReturnDate);
+                    break;
+                case "Date_desc":
                     Reservations = Reservations.OrderByDescending(s => s.ReturnDate);
                     break;
-                case "date":
-                    Reservations = Reservations.OrderBy(s => s.ReturnDate);
+                default:
+                    Reservations = Reservations.OrderBy(s => s.PickUpTime);
                     break;
             }
             int pageSize = 3;
