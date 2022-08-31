@@ -20,11 +20,50 @@ namespace CarRentalWebfinal.Controllers
         }
 
         // GET: Locations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    int? pageNumber)
+
         {
-            return _context.Location != null ?
-                        View(await _context.Location.ToListAsync()) :
-                        Problem("Entity set 'CarRentalWebfinalContext.Location'  is null.");
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            var locations = from s in _context.Location
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                locations = locations.Where(s => s.City.Contains(searchString)
+                                       || s.State.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    locations = locations.OrderByDescending(s => s.City);
+                    break;
+                case "Date":
+                    locations = locations.OrderBy(s => s.State);
+                    break;
+                case "date_desc":
+                    locations = locations.OrderByDescending(s => s.State);
+                    break;
+                default:
+                    locations = locations.OrderBy(s => s.City);
+                    break;
+            }
+            int pageSize = 3;
+            return View(await PaginatedList<Location>.CreateAsync(locations.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Locations/Details/5
@@ -58,7 +97,7 @@ namespace CarRentalWebfinal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LocationId,Address,City,State")] Location location)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(location);
                 await _context.SaveChangesAsync();
@@ -95,7 +134,7 @@ namespace CarRentalWebfinal.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
