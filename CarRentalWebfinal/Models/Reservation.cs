@@ -13,6 +13,7 @@ namespace CarRentalWebfinal.Models
         public string LocationAddress { get; set; }
 
         public DateTime PickUpTime { get; set; }
+        // this code makes the date in the standard format//
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime ReturnDate { get; set; }

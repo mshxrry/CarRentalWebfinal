@@ -9,9 +9,11 @@ namespace CarRentalWebfinal.Models
     {
         public int LocationId { get; set; }
         public string Address { get; set; }
-        [StringLength(20, ErrorMessage = "The first name cannot exceed 20 characters")]
+        // this code says that the city cannot be more than 20 characters//
+        [StringLength(20, ErrorMessage = "The city cannot exceed 20 characters")]
         public string City { get; set; }
-        [StringLength(20, ErrorMessage = "The first name cannot exceed 20 characters")]
+        // this code says that the state cannot be more than 20 characters//
+        [StringLength(20, ErrorMessage = "The  state cannot exceed 20 characters")]
         public string State { get; set; }
 
 

@@ -39,7 +39,7 @@ namespace CarRentalWebfinal.Controllers
             {
                 searchString = currentFilter;
             }
-
+            // added search string in location controller//
             var locations = from s in _context.Location
                            select s;
             if (!String.IsNullOrEmpty(searchString))
@@ -47,6 +47,7 @@ namespace CarRentalWebfinal.Controllers
                 locations = locations.Where(s => s.City.Contains(searchString)
                                        || s.State.Contains(searchString));
             }
+            // added sorting in locations controller//
             switch (sortOrder)
             {
                 case "name_desc":

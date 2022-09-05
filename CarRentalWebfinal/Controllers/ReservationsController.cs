@@ -37,6 +37,7 @@ namespace CarRentalWebfinal.Controllers
             {
                 searchString = currentFilter;
             }
+            // added search string in reservations controller//
             ViewData["CurrentFilter"] = searchString;
             var Reservations = from s in _context.Reservation
                            select s;
@@ -46,6 +47,7 @@ namespace CarRentalWebfinal.Controllers
 
 
             }
+            // added sorting in Reservations controller//
             switch (sortOrder)
             {
                 case "date_desc":

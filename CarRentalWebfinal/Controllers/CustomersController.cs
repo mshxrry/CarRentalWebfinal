@@ -37,6 +37,8 @@ namespace CarRentalWebfinal.Controllers
             {
                 searchString = currentFilter;
             }
+            // added a search string in the customer controller//
+            
             ViewData["CurrentFilter"] = searchString;
             var customers = from s in _context.Customer
                            select s;
@@ -45,6 +47,7 @@ namespace CarRentalWebfinal.Controllers
                 customers = customers.Where(s => s.LastName.Contains(searchString)
                                        || s.FirstMidName.Contains(searchString));
             }
+            // added sorting in the customer controller//
             switch (sortOrder)
             {
                 case "name_desc":

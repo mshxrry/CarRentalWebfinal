@@ -37,6 +37,7 @@ namespace CarRentalWebfinal.Controllers
             {
                 searchString = currentFilter;
             }
+            // added search string in vehicles controller//
             ViewData["CurrentFilter"] = searchString;
             var Vehicles = from s in _context.Vehicle
                            select s;
@@ -46,6 +47,7 @@ namespace CarRentalWebfinal.Controllers
 
 
             }
+            // added sorting in vehicles controller//
             switch (sortOrder)
             {
                 case "name_desc":
